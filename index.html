@@ -1,0 +1,1112 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AURA — Parfum Premium</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;1,300;1,500&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #0A0A0A;
+    --dark: #111111;
+    --card: #161616;
+    --gold: #C9A84C;
+    --gold-light: #E8C97A;
+    --white: #F5F0E8;
+    --muted: #6B6B6B;
+    --border: rgba(201,168,76,0.2);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: 'Jost', sans-serif;
+    font-weight: 300;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* CUSTOM CURSOR */
+  .cursor {
+    width: 8px; height: 8px;
+    background: var(--gold);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9999;
+    transition: transform 0.1s;
+    transform: translate(-50%, -50%);
+  }
+
+  .cursor-ring {
+    width: 32px; height: 32px;
+    border: 1px solid rgba(201,168,76,0.5);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%, -50%);
+    transition: all 0.15s ease;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 24px 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: linear-gradient(to bottom, rgba(10,10,10,0.95), transparent);
+  }
+
+  .logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.8rem;
+    font-weight: 300;
+    letter-spacing: 0.3em;
+    color: var(--gold);
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 40px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    color: var(--white);
+    text-decoration: none;
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    opacity: 0.6;
+    transition: opacity 0.3s;
+  }
+
+  .nav-links a:hover { opacity: 1; color: var(--gold); }
+
+  .nav-right {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+  }
+
+  .cart-icon {
+    color: var(--white);
+    font-size: 1rem;
+    cursor: pointer;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+    position: relative;
+  }
+
+  .cart-icon:hover { opacity: 1; }
+
+  .cart-count {
+    position: absolute;
+    top: -6px; right: -8px;
+    background: var(--gold);
+    color: var(--black);
+    font-size: 0.6rem;
+    width: 16px; height: 16px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 500;
+  }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    text-align: center;
+    padding: 120px 40px 80px;
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 50% 60%, rgba(201,168,76,0.06) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 40% at 20% 30%, rgba(201,168,76,0.03) 0%, transparent 60%);
+  }
+
+  .hero-lines {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(201,168,76,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(201,168,76,0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 2;
+    max-width: 700px;
+  }
+
+  .hero-eyebrow {
+    font-size: 0.7rem;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.2s forwards;
+  }
+
+  .hero-eyebrow::before,
+  .hero-eyebrow::after {
+    content: '';
+    width: 40px;
+    height: 1px;
+    background: var(--gold);
+    opacity: 0.4;
+  }
+
+  .hero-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(4rem, 8vw, 7rem);
+    font-weight: 300;
+    line-height: 1.0;
+    margin-bottom: 24px;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.4s forwards;
+  }
+
+  .hero-title em {
+    font-style: italic;
+    color: var(--gold);
+  }
+
+  .hero-sub {
+    font-size: 0.9rem;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    line-height: 1.8;
+    max-width: 420px;
+    margin: 0 auto 48px;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.6s forwards;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.8s forwards;
+  }
+
+  .btn-gold {
+    background: var(--gold);
+    color: var(--black);
+    border: none;
+    padding: 14px 36px;
+    font-family: 'Jost', sans-serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-weight: 500;
+  }
+
+  .btn-gold:hover {
+    background: var(--gold-light);
+    transform: translateY(-2px);
+  }
+
+  .btn-outline {
+    background: transparent;
+    color: var(--white);
+    border: 1px solid rgba(245,240,232,0.2);
+    padding: 14px 36px;
+    font-family: 'Jost', sans-serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+
+  .btn-outline:hover { border-color: var(--gold); color: var(--gold); }
+
+  .hero-scroll {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    opacity: 0.4;
+    animation: pulse 2s infinite;
+  }
+
+  .hero-scroll span {
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+
+  .scroll-line {
+    width: 1px;
+    height: 40px;
+    background: linear-gradient(to bottom, var(--white), transparent);
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 0.7; }
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* MARQUEE */
+  .marquee {
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 0;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+
+  .marquee-inner {
+    display: inline-block;
+    animation: marquee 18s linear infinite;
+    font-size: 0.7rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .marquee-item { margin-right: 60px; }
+  .marquee-item::before { content: '◆  '; color: var(--gold); font-size: 0.5rem; }
+
+  @keyframes marquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  /* SECTION */
+  section { padding: 100px 60px; }
+
+  .section-label {
+    font-size: 0.65rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--gold);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .section-label::before {
+    content: '';
+    width: 30px;
+    height: 1px;
+    background: var(--gold);
+  }
+
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    font-weight: 300;
+    line-height: 1.2;
+  }
+
+  /* PRODUK */
+  .products-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 56px;
+  }
+
+  .filter-row {
+    display: flex;
+    gap: 8px;
+  }
+
+  .filter-btn {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 8px 20px;
+    font-family: 'Jost', sans-serif;
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.25s;
+  }
+
+  .filter-btn.active,
+  .filter-btn:hover {
+    border-color: var(--gold);
+    color: var(--gold);
+  }
+
+  .products-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2px;
+  }
+
+  .product-card {
+    background: var(--card);
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    group: true;
+  }
+
+  .product-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border: 1px solid transparent;
+    transition: border-color 0.3s;
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  .product-card:hover::before { border-color: var(--gold); }
+
+  .product-img-wrap {
+    height: 280px;
+    background: #0F0F0F;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .product-scent-bg {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 0.5s;
+  }
+
+  .product-card:hover .product-scent-bg { opacity: 1; }
+
+  .product-emoji-big {
+    font-size: 5rem;
+    position: relative;
+    z-index: 1;
+    transition: transform 0.4s ease;
+    filter: drop-shadow(0 0 20px rgba(201,168,76,0.3));
+  }
+
+  .product-card:hover .product-emoji-big {
+    transform: scale(1.15) translateY(-8px);
+  }
+
+  .product-badge {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    font-size: 0.6rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 5px 12px;
+    z-index: 3;
+  }
+
+  .badge-new { background: var(--gold); color: var(--black); }
+  .badge-best { background: transparent; border: 1px solid var(--gold); color: var(--gold); }
+  .badge-arab { background: #1A1008; border: 1px solid rgba(201,168,76,0.4); color: var(--gold); }
+
+  .product-quick-add {
+    position: absolute;
+    bottom: 16px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--gold);
+    color: var(--black);
+    border: none;
+    padding: 10px 24px;
+    font-family: 'Jost', sans-serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    cursor: pointer;
+    opacity: 0;
+    transition: all 0.3s;
+    white-space: nowrap;
+    z-index: 3;
+  }
+
+  .product-card:hover .product-quick-add {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  .product-info {
+    padding: 20px 20px 24px;
+    border-top: 1px solid rgba(255,255,255,0.04);
+  }
+
+  .product-category {
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+
+  .product-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.25rem;
+    font-weight: 300;
+    margin-bottom: 6px;
+  }
+
+  .product-notes {
+    font-size: 0.75rem;
+    color: var(--muted);
+    margin-bottom: 16px;
+    font-style: italic;
+  }
+
+  .product-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .product-price {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.3rem;
+    color: var(--gold);
+  }
+
+  .product-vol {
+    font-size: 0.7rem;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+  }
+
+  /* FEATURED */
+  .featured {
+    background: var(--dark);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .featured-inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+  }
+
+  .featured-visual {
+    height: 500px;
+    background: var(--black);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .featured-glow {
+    position: absolute;
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, rgba(201,168,76,0.12) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+
+  .featured-emoji {
+    font-size: 8rem;
+    position: relative;
+    z-index: 1;
+    filter: drop-shadow(0 0 40px rgba(201,168,76,0.4));
+    animation: float 4s ease-in-out infinite;
+  }
+
+  .featured-ring {
+    position: absolute;
+    width: 200px; height: 200px;
+    border: 1px solid rgba(201,168,76,0.1);
+    border-radius: 50%;
+    animation: spin 20s linear infinite;
+  }
+
+  .featured-ring:nth-child(2) {
+    width: 300px; height: 300px;
+    animation-direction: reverse;
+    animation-duration: 30s;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-16px); }
+  }
+
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  .featured-label { margin-bottom: 20px; }
+
+  .featured-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 3rem;
+    font-weight: 300;
+    line-height: 1.2;
+    margin-bottom: 24px;
+  }
+
+  .featured-title em { font-style: italic; color: var(--gold); }
+
+  .featured-desc {
+    color: var(--muted);
+    font-size: 0.9rem;
+    line-height: 1.9;
+    margin-bottom: 32px;
+  }
+
+  .scent-notes {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 40px;
+    flex-wrap: wrap;
+  }
+
+  .note-tag {
+    border: 1px solid var(--border);
+    padding: 6px 16px;
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .note-tag.top { border-color: rgba(201,168,76,0.4); color: var(--gold); }
+
+  .featured-price-row {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+  }
+
+  .featured-price {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.2rem;
+    color: var(--gold);
+  }
+
+  /* MOOD SECTION */
+  .mood-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-top: 56px;
+  }
+
+  .mood-card {
+    border: 1px solid var(--border);
+    padding: 40px 32px;
+    position: relative;
+    cursor: pointer;
+    transition: all 0.3s;
+    overflow: hidden;
+  }
+
+  .mood-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 0.4s;
+  }
+
+  .mood-card.office::before { background: linear-gradient(135deg, rgba(201,168,76,0.05), transparent); }
+  .mood-card.date::before { background: linear-gradient(135deg, rgba(180,80,80,0.06), transparent); }
+  .mood-card.casual::before { background: linear-gradient(135deg, rgba(80,150,130,0.05), transparent); }
+
+  .mood-card:hover::before { opacity: 1; }
+  .mood-card:hover { border-color: rgba(201,168,76,0.4); }
+
+  .mood-icon { font-size: 2.5rem; margin-bottom: 20px; display: block; }
+  .mood-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.4rem;
+    margin-bottom: 12px;
+  }
+  .mood-desc { font-size: 0.82rem; color: var(--muted); line-height: 1.7; margin-bottom: 20px; }
+  .mood-products { font-size: 0.7rem; letter-spacing: 0.12em; color: var(--gold); text-transform: uppercase; }
+
+  /* TESTIMONIAL */
+  .testimonials {
+    background: var(--dark);
+    text-align: center;
+  }
+
+  .testi-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 32px;
+    margin-top: 56px;
+  }
+
+  .testi-card {
+    border: 1px solid var(--border);
+    padding: 40px 32px;
+    text-align: left;
+    position: relative;
+  }
+
+  .testi-card::before {
+    content: '"';
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 5rem;
+    color: var(--gold);
+    opacity: 0.15;
+    position: absolute;
+    top: 16px;
+    left: 28px;
+    line-height: 1;
+  }
+
+  .testi-text {
+    font-size: 0.9rem;
+    color: var(--muted);
+    line-height: 1.8;
+    margin-bottom: 24px;
+    font-style: italic;
+  }
+
+  .testi-name {
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+    color: var(--white);
+    text-transform: uppercase;
+  }
+
+  .testi-stars { color: var(--gold); font-size: 0.8rem; margin-bottom: 16px; }
+
+  /* FOOTER */
+  footer {
+    padding: 60px;
+    border-top: 1px solid var(--border);
+  }
+
+  .footer-top {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 60px;
+    margin-bottom: 60px;
+    padding-bottom: 60px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .footer-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2rem;
+    color: var(--gold);
+    letter-spacing: 0.3em;
+    margin-bottom: 16px;
+    display: block;
+  }
+
+  .footer-desc { color: var(--muted); font-size: 0.85rem; line-height: 1.8; max-width: 260px; }
+
+  .footer-col h4 {
+    font-size: 0.65rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 20px;
+  }
+
+  .footer-col ul { list-style: none; }
+  .footer-col li {
+    color: var(--muted);
+    font-size: 0.85rem;
+    margin-bottom: 12px;
+    cursor: pointer;
+    transition: color 0.2s;
+  }
+  .footer-col li:hover { color: var(--white); }
+
+  .footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    color: var(--muted);
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+  }
+
+  /* FADE IN */
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">AURA</div>
+  <ul class="nav-links">
+    <li><a href="#">Koleksi</a></li>
+    <li><a href="#">Mood Guide</a></li>
+    <li><a href="#">Tentang</a></li>
+    <li><a href="#">Kontak</a></li>
+  </ul>
+  <div class="nav-right">
+    <div class="cart-icon">
+      🛍
+      <span class="cart-count">2</span>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-lines"></div>
+  <div class="hero-content">
+    <p class="hero-eyebrow">Koleksi Eksklusif 2024</p>
+    <h1 class="hero-title">
+      Aroma yang<br><em>Bercerita.</em>
+    </h1>
+    <p class="hero-sub">
+      Setiap tetes adalah perjalanan. Dari bunga Timur Tengah hingga rempah Nusantara — temukan wewangian yang mencerminkan dirimu.
+    </p>
+    <div class="hero-actions">
+      <button class="btn-gold">Jelajahi Koleksi</button>
+      <button class="btn-outline">Panduan Aroma</button>
+    </div>
+  </div>
+  <div class="hero-scroll">
+    <span>Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee">
+  <div class="marquee-inner">
+    <span class="marquee-item">Parfum Arab Asli</span>
+    <span class="marquee-item">Pengiriman Seluruh Indonesia</span>
+    <span class="marquee-item">Tester Tersedia</span>
+    <span class="marquee-item">Garansi Keaslian</span>
+    <span class="marquee-item">BPOM Terdaftar</span>
+    <span class="marquee-item">Parfum Custom</span>
+    <span class="marquee-item">Parfum Arab Asli</span>
+    <span class="marquee-item">Pengiriman Seluruh Indonesia</span>
+    <span class="marquee-item">Tester Tersedia</span>
+    <span class="marquee-item">Garansi Keaslian</span>
+    <span class="marquee-item">BPOM Terdaftar</span>
+    <span class="marquee-item">Parfum Custom</span>
+  </div>
+</div>
+
+<!-- PRODUK -->
+<section class="reveal">
+  <div class="products-header">
+    <div>
+      <p class="section-label">Pilihan Terbaik</p>
+      <h2 class="section-title">Koleksi Unggulan</h2>
+    </div>
+    <div class="filter-row">
+      <button class="filter-btn active">Semua</button>
+      <button class="filter-btn">Arab</button>
+      <button class="filter-btn">Lokal</button>
+      <button class="filter-btn">Refill</button>
+    </div>
+  </div>
+
+  <div class="products-grid">
+    <div class="product-card">
+      <div class="product-img-wrap">
+        <div class="product-scent-bg" style="background: radial-gradient(circle at center, rgba(201,168,76,0.15), transparent 70%);"></div>
+        <span class="product-badge badge-best">Terlaris</span>
+        <div class="product-emoji-big">🌹</div>
+        <button class="product-quick-add">+ Keranjang</button>
+      </div>
+      <div class="product-info">
+        <p class="product-category">Parfum Arab</p>
+        <h3 class="product-name">Rose Oud Royale</h3>
+        <p class="product-notes">Mawar · Oud · Kesturi · Amber</p>
+        <div class="product-footer">
+          <span class="product-price">Rp 285.000</span>
+          <span class="product-vol">50ml</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-card">
+      <div class="product-img-wrap">
+        <div class="product-scent-bg" style="background: radial-gradient(circle at center, rgba(100,150,200,0.1), transparent 70%);"></div>
+        <span class="product-badge badge-new">Baru</span>
+        <div class="product-emoji-big">🫧</div>
+        <button class="product-quick-add">+ Keranjang</button>
+      </div>
+      <div class="product-info">
+        <p class="product-category">Parfum Lokal</p>
+        <h3 class="product-name">Aqua Nusantara</h3>
+        <p class="product-notes">Laut · Jeruk · Vetiver · Kayu</p>
+        <div class="product-footer">
+          <span class="product-price">Rp 195.000</span>
+          <span class="product-vol">35ml</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-card">
+      <div class="product-img-wrap">
+        <div class="product-scent-bg" style="background: radial-gradient(circle at center, rgba(180,120,60,0.12), transparent 70%);"></div>
+        <span class="product-badge badge-arab">Arab</span>
+        <div class="product-emoji-big">🪵</div>
+        <button class="product-quick-add">+ Keranjang</button>
+      </div>
+      <div class="product-info">
+        <p class="product-category">Parfum Arab</p>
+        <h3 class="product-name">Black Amber Oud</h3>
+        <p class="product-notes">Oud Gelap · Vanilla · Cendana · Musk</p>
+        <div class="product-footer">
+          <span class="product-price">Rp 320.000</span>
+          <span class="product-vol">50ml</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-card">
+      <div class="product-img-wrap">
+        <div class="product-scent-bg" style="background: radial-gradient(circle at center, rgba(150,200,150,0.1), transparent 70%);"></div>
+        <span class="product-badge badge-new">Baru</span>
+        <div class="product-emoji-big">🌿</div>
+        <button class="product-quick-add">+ Keranjang</button>
+      </div>
+      <div class="product-info">
+        <p class="product-category">Herbal & Segar</p>
+        <h3 class="product-name">Forest Zen</h3>
+        <p class="product-notes">Bambu · Teh Hijau · Cedar · Mint</p>
+        <div class="product-footer">
+          <span class="product-price">Rp 175.000</span>
+          <span class="product-vol">30ml</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURED -->
+<section class="featured reveal">
+  <div class="featured-inner">
+    <div class="featured-visual">
+      <div class="featured-glow"></div>
+      <div class="featured-ring"></div>
+      <div class="featured-ring"></div>
+      <div class="featured-emoji">🏺</div>
+    </div>
+    <div>
+      <p class="section-label featured-label">Pilihan Editor</p>
+      <h2 class="featured-title">
+        Midnight<br><em>Musk Elixir</em>
+      </h2>
+      <p class="featured-desc">
+        Wewangian eksklusif yang terinspirasi dari malam di padang pasir — hangat, misterius, dan tahan lama hingga 12 jam. Perpaduan sempurna antara musk Timur Tengah dengan rempah Indonesia.
+      </p>
+      <div class="scent-notes">
+        <span class="note-tag top">Top: Saffron</span>
+        <span class="note-tag">Heart: Mawar Turki</span>
+        <span class="note-tag">Base: Oud & Amber</span>
+      </div>
+      <div class="featured-price-row">
+        <span class="featured-price">Rp 450.000</span>
+        <button class="btn-gold">Beli Sekarang</button>
+        <button class="btn-outline">Lihat Detail</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MOOD GUIDE -->
+<section class="reveal">
+  <p class="section-label">Temukan Aromamu</p>
+  <h2 class="section-title">Panduan Mood</h2>
+  <div class="mood-grid">
+    <div class="mood-card office">
+      <span class="mood-icon">💼</span>
+      <h3 class="mood-title">Profesional & Percaya Diri</h3>
+      <p class="mood-desc">Untuk hari kerja dan meeting penting. Aroma bersih, elegan, dan tidak menyengat — tetap berkesan tanpa berlebihan.</p>
+      <span class="mood-products">4 Produk Tersedia →</span>
+    </div>
+    <div class="mood-card date">
+      <span class="mood-icon">🌙</span>
+      <h3 class="mood-title">Malam & Romantis</h3>
+      <p class="mood-desc">Untuk dinner date atau acara spesial. Aroma hangat, sensual, dan tahan lama yang meninggalkan kesan mendalam.</p>
+      <span class="mood-products">6 Produk Tersedia →</span>
+    </div>
+    <div class="mood-card casual">
+      <span class="mood-icon">☀️</span>
+      <h3 class="mood-title">Santai & Segar</h3>
+      <p class="mood-desc">Untuk sehari-hari, jalan-jalan, atau hangout. Ringan, menyegarkan, dan cocok di segala suasana.</p>
+      <span class="mood-products">5 Produk Tersedia →</span>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONI -->
+<section class="testimonials reveal">
+  <p class="section-label" style="justify-content: center;">Kata Mereka</p>
+  <h2 class="section-title">Pelanggan Setia Kami</h2>
+  <div class="testi-grid">
+    <div class="testi-card">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-text">Rose Oud Royale beneran tahan lama banget, dari pagi sampai malam masih tercium. Banyak yang nanya pakek parfum apa!</p>
+      <span class="testi-name">Annisa R. — Jakarta</span>
+    </div>
+    <div class="testi-card">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-text">Sudah coba banyak parfum arab, tapi Black Amber Oud ini favorit saya. Aromanya berat tapi elegan, pas banget buat malam hari.</p>
+      <span class="testi-name">Budi S. — Surabaya</span>
+    </div>
+    <div class="testi-card">
+      <div class="testi-stars">★★★★☆</div>
+      <p class="testi-text">Pengirimannya cepat dan kemasannya rapi banget. Senang karena ada tester dulu sebelum beli botol penuh. Recommended!</p>
+      <span class="testi-name">Dewi K. — Bandung</span>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div>
+      <span class="footer-logo">AURA</span>
+      <p class="footer-desc">Koleksi parfum premium pilihan — dari Timur Tengah hingga lokal Indonesia. Setiap aroma, sebuah cerita.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Koleksi</h4>
+      <ul>
+        <li>Parfum Arab</li>
+        <li>Parfum Lokal</li>
+        <li>Refill & Isi Ulang</li>
+        <li>Custom Blend</li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Layanan</h4>
+      <ul>
+        <li>Tester Gratis</li>
+        <li>Konsultasi Aroma</li>
+        <li>Gift Wrapping</li>
+        <li>Retur 7 Hari</li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Hubungi</h4>
+      <ul>
+        <li>WhatsApp</li>
+        <li>Instagram @aurascent</li>
+        <li>Tokopedia</li>
+        <li>Shopee</li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2024 AURA. All rights reserved.</span>
+    <span>Privasi · Syarat & Ketentuan · BPOM</span>
+  </div>
+</footer>
+
+<script>
+  // Custom cursor
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cursor.style.left = mx + 'px';
+    cursor.style.top = my + 'px';
+  });
+
+  function animateRing() {
+    rx += (mx - rx) * 0.12;
+    ry += (my - ry) * 0.12;
+    ring.style.left = rx + 'px';
+    ring.style.top = ry + 'px';
+    requestAnimationFrame(animateRing);
+  }
+  animateRing();
+
+  // Hover expand ring
+  document.querySelectorAll('button, a, .product-card, .mood-card').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      ring.style.transform = 'translate(-50%, -50%) scale(2)';
+      ring.style.borderColor = 'rgba(201,168,76,0.6)';
+    });
+    el.addEventListener('mouseleave', () => {
+      ring.style.transform = 'translate(-50%, -50%) scale(1)';
+      ring.style.borderColor = 'rgba(201,168,76,0.5)';
+    });
+  });
+
+  // Scroll reveal
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  // Filter buttons
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    });
+  });
+
+  // Quick add feedback
+  document.querySelectorAll('.product-quick-add').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      btn.textContent = '✓ Ditambahkan';
+      setTimeout(() => btn.textContent = '+ Keranjang', 1500);
+    });
+  });
+</script>
+</body>
+</html>
